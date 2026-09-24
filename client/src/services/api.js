@@ -66,6 +66,14 @@ const API = {
     }),
   },
 
+  checkout: {
+    quote: (items, promoCode) => API.fetchData('/api/checkout/quote', {
+      method: 'POST',
+      headers: { 'Content-Type': 'application/json' },
+      body: JSON.stringify({ items, promoCode }),
+    }),
+  },
+
   search: {
     query: (searchTerm) => API.fetchData(`/api/search?q=${encodeURIComponent(searchTerm)}`),
   },

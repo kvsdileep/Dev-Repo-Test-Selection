@@ -2,6 +2,7 @@ const express = require('express');
 const cors = require('cors');
 const path = require('path');
 require('dotenv').config();
+const checkout = require('./checkout');
 
 const app = express();
 const PORT = process.env.PORT || 5001;
@@ -314,6 +315,16 @@ app.post('/api/orders', (req, res) => {
     message: 'Order created successfully',
     order: newOrder
   });
+});
+
+// ============ CHECKOUT ROUTES ============
+app.post('/api/checkout/quote', (req, res) => {
+  const { items, promoCode } = req.body;
+  try {
+    res.json(checkout.quote(items, promoCode, products));
+  } catch (error) {
+    res.status(400).json({ error: error.message });
+  }
 });
 
 // ============ TASK ROUTES ============

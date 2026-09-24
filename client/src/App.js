@@ -13,6 +13,7 @@ import Users from './components/users/Users';
 import Products from './components/products/Products';
 import Tasks from './components/tasks/Tasks';
 import Orders from './components/orders/Orders';
+import Checkout from './components/checkout/Checkout';
 import Search from './components/search/Search';
 import FilesAndThemes from './components/themes/FilesAndThemes';
 
@@ -137,7 +138,7 @@ function App() {
         
         {/* Navigation */}
         <nav className="nav-tabs">
-          {['dashboard', 'users', 'products', 'tasks', 'orders', 'search', 'files'].map(tab => (
+          {['dashboard', 'users', 'products', 'tasks', 'orders', 'checkout', 'search', 'files'].map(tab => (
             <button
               key={tab}
               className={`nav-tab ${activeTab === tab ? 'active' : ''}`}
@@ -196,6 +197,8 @@ function App() {
             fetchAnalytics={fetchAnalytics}
           />
         )}
+
+        {activeTab === 'checkout' && <Checkout products={products} />}
 
         {activeTab === 'search' && (
           <Search 
