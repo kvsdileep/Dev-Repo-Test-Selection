@@ -91,6 +91,12 @@ function Checkout({ products }) {
               <dt>Subtotal</dt>
               <dd data-testid="subtotal">${quote.subtotal}</dd>
             </div>
+            {quote.discount > 0 && (
+              <div className="summary-row summary-discount">
+                <dt>Discount{quote.promo ? ` (${quote.promo})` : ''}</dt>
+                <dd data-testid="discount">-${quote.discount}</dd>
+              </div>
+            )}
             <div className="summary-row summary-total">
               <dt>Total</dt>
               <dd data-testid="total">${quote.total}</dd>

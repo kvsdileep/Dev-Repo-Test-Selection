@@ -32,13 +32,30 @@ function buildLines(items, products) {
   });
 }
 
-// Promo codes are not supported yet.
+const PROMO_CODES = {
+  TECH10: { rate: 0.1, category: 'Electronics', description: '10% off electronics' }
+};
+
 // Returns { discount, promo, message } for the given lines and code.
 function applyPromo(lines, promoCode) {
   if (!promoCode) {
     return { discount: 0, promo: null, message: null };
   }
-  return { discount: 0, promo: null, message: 'Promo codes are not supported yet' };
+
+  const code = promoCode.trim().toUpperCase();
+  const promo = PROMO_CODES[code];
+  if (!promo) {
+    return { discount: 0, promo: null, message: `Invalid promo code: ${promoCode}` };
+  }
+
+  const hasEligible = lines.some(line => line.category === promo.category);
+  if (!hasEligible) {
+    return { discount: 0, promo: null, message: `${code} requires ${promo.category} items in your cart` };
+  }
+
+  const cartCents = lines.reduce((sum, line) => sum + toCents(line.lineTotal), 0);
+  const discount = fromCents(Math.round(cartCents * promo.rate));
+  return { discount, promo: code, message: `${code} applied: ${promo.description}` };
 }
 
 function quote(items, promoCode, products) {
