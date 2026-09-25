@@ -33,3 +33,30 @@ test('rejects out-of-range quantities', () => {
   assert.throws(() => quote([{ productId: 5, qty: 0 }], '', products), /between 1 and 10/);
   assert.throws(() => quote([{ productId: 5, qty: 11 }], '', products), /between 1 and 10/);
 });
+
+test('TECH10 takes 10% off electronics lines only', () => {
+  const result = quote([{ productId: 1, qty: 1 }, { productId: 4, qty: 1 }], 'TECH10', products);
+  assert.strictEqual(result.subtotal, 1089.98);
+  assert.strictEqual(result.discount, 100); // 10% of the $999.99 laptop, rounded to the cent
+  assert.strictEqual(result.promo, 'TECH10');
+  assert.strictEqual(result.total, 989.98);
+});
+
+test('TECH10 is case-insensitive', () => {
+  const result = quote([{ productId: 1, qty: 1 }], 'tech10', products);
+  assert.strictEqual(result.discount, 100);
+  assert.strictEqual(result.promo, 'TECH10');
+});
+
+test('TECH10 gives no discount when the cart has no electronics', () => {
+  const result = quote([{ productId: 4, qty: 1 }], 'TECH10', products);
+  assert.strictEqual(result.discount, 0);
+  assert.strictEqual(result.promo, null);
+  assert.match(result.message, /requires Electronics items/);
+});
+
+test('rejects an unknown promo code', () => {
+  const result = quote([{ productId: 1, qty: 1 }], 'BOGUS', products);
+  assert.strictEqual(result.discount, 0);
+  assert.match(result.message, /Invalid promo code/);
+});
